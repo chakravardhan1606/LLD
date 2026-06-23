@@ -5,7 +5,7 @@
             "type": "java",
             "name": "ChessGame",
             "request": "launch",
-            "mainClass": "com.chess.ChessGame",
+            "mainClass": "ChessGame",
             "projectName": "chess-game"
         }
     ]
