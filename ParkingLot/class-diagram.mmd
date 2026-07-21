@@ -1,0 +1,110 @@
+classDiagram
+    class Main {
+        +main(String[] args) void
+    }
+
+    class ParkingLot {
+        -SlotManager slotManager
+        -TicketManager ticketManager
+        -FeeCalculationStrategy feeCalculationStrategy
+        -ParkingLot parkingLot$
+        +getParkingLot()$ ParkingLot
+        +entry(Vehicle vehicle) Ticket
+        +Park(Vehicle vehicle, Slot slot) void
+        +unPark(Vehicle vehicle, Slot slot) void
+        +exit(Vehicle vehicle) void
+        +addSlots(VehicleType type, int floor, int totSlots) void
+    }
+
+    class SlotManager {
+        -Map~Integer, List~Slot~~ floorWiseSlots
+        -Set~Slot~ availableSlots
+        +addSlot(VehicleType type, int floor) void
+        +removeSlot(Slot slot) void
+        +getSlot(VehicleType type) Slot
+        +setOccupied(Slot slot) void
+        +setVacant(Slot slot) void
+    }
+
+    class TicketManager {
+        -Map~String, Ticket~ tickets
+        +generateTicket(String vehicleId, Slot slot) Ticket
+        +getTicket(String vehicleId) Ticket
+    }
+
+    class FeeCalculationStrategy {
+        <<interface>>
+        +calculateFee(VehicleType type, double chargePerHour, LocalDateTime dateTime) double
+    }
+
+    class HourlyCalculationStrategy {
+        +calculateFee(VehicleType type, double chargePerHour, LocalDateTime dateTime) double
+    }
+
+    class VehicleTypeCalculationStrategy {
+        +calculateFee(VehicleType type, double chargePerHour, LocalDateTime dateTime) double
+    }
+
+    class Vehicle {
+        <<abstract>>
+        -String id
+        -String address
+        -VehicleType vehicleType
+        +getId() String
+        +getAddress() String
+        +getVehicleType() VehicleType
+    }
+
+    class Car {
+        +Car(String id, String address)
+    }
+
+    class Bike {
+        +Bike(String id, String address)
+    }
+
+    class Truck {
+        +Truck(String id, String address)
+    }
+
+    class VehicleType {
+        <<enumeration>>
+        BIKE
+        CAR
+        TRUCK
+    }
+
+    class Slot {
+        -String id
+        -VehicleType slotType
+        -boolean isOccupied
+        -int floor
+        +getId() String
+        +getSlotType() VehicleType
+        +isOccupied() boolean
+        +getFloor() int
+    }
+
+    class Ticket {
+        -String id
+        -LocalDateTime time
+        -Slot slot
+        +getId() String
+        +getTime() LocalDateTime
+        +getSlot() Slot
+    }
+
+    Main --> ParkingLot : uses
+    ParkingLot --> SlotManager : owns
+    ParkingLot --> TicketManager : owns
+    ParkingLot --> FeeCalculationStrategy : uses
+    HourlyCalculationStrategy ..|> FeeCalculationStrategy : implements
+    VehicleTypeCalculationStrategy ..|> FeeCalculationStrategy : implements
+    SlotManager --> Slot : manages
+    TicketManager --> Ticket : manages
+    Ticket --> Slot : references
+    Car --|> Vehicle : extends
+    Bike --|> Vehicle : extends
+    Truck --|> Vehicle : extends
+    Vehicle --> VehicleType : has
+    Slot --> VehicleType : has
