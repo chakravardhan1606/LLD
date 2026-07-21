@@ -1,0 +1,77 @@
+classDiagram
+    class Main {
+        +main(String[] args) void
+    }
+
+    class SnakeAndLadder {
+        -Board board
+        -Queue~Player~ players
+        +SnakeAndLadder(List~Player~ playerList, int size)
+        -initializeBoard() void
+        +play() void
+    }
+
+    class Board {
+        -int size
+        -int totalCells
+        -Map~Integer, Integer~ snakes
+        -Map~Integer, Integer~ ladders
+        -Map~Color, Integer~ playerPositions
+        +Board(int size)
+        -initializePlayers() void
+        +addSnake(int head, int tail) void
+        +addLadder(int start, int end) void
+        +getPlayerPosition(Color color) int
+        +move(Color color, int diceValue) boolean
+    }
+
+    class Player {
+        -String playerId
+        -String playerName
+        -Color color
+        +Player(String playerId, String playerName, Color color)
+        +roll() int
+        +getPlayerId() String
+        +getPlayerName() String
+        +getColor() Color
+    }
+
+    class Color {
+        <<enumeration>>
+        Red
+        White
+        Blue
+        Yellow
+    }
+
+    class Position {
+        #int row
+        #int col
+        -Set~Color~ colors
+        +Position(int row, int col)
+        +getColors() Set~Color~
+        +addColors(Color color) void
+        +removeColor(Color color) void
+    }
+
+    class SnakePosition {
+        -Position position
+        +SnakePosition(int row, int col, Position position)
+        +getPosition() Position
+    }
+
+    class LadderPosition {
+        -Position position
+        +LadderPosition(int row, int col, Position position)
+        +getPosition() Position
+    }
+
+    Main --> SnakeAndLadder : creates
+    Main --> Player : creates
+    SnakeAndLadder --> Board : owns
+    SnakeAndLadder --> Player : manages queue of
+    Board --> Color : keyed by
+    Player --> Color : has
+    SnakePosition --|> Position : extends
+    LadderPosition --|> Position : extends
+    Position --> Color : has
